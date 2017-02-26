@@ -1,0 +1,153 @@
+---
+title: "The Effect of Vitamin C on Tooth Growth in Guinea Pigs"
+author: "Tanguy Levent"
+date: "26 février 2017"
+output:
+  pdf_document: default
+  word_document: default
+header-includes: \usepackage{color}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Synopsis
+
+I download the ToothGrowth data in the R datasets package so that analyze the effect of the vitamin C on the Tooth growth in Guinea pigs.
+First I'm going to provide basic summarises to understand clearly the variables and observations of the dataset.
+Then I perform some basic exploratory data analyses to finally use confidence intervals and/or hypothesis tests.
+
+Before to go forward, please to take a look on the [\textcolor{blue}{ToothGrowth R package description}](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/ToothGrowth.html)
+
+
+## 1. Load the ToothGrowth data  
+
+I load my dataset and store it in a variable called *"mdata"*.  
+
+```{r message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+
+data("ToothGrowth")
+mdata <- ToothGrowth
+sum(is.na(mdata))
+```
+
+**Note that there are no missing values in our dataset.**  
+
+## 2. Provide a basic summary of the data  
+
+```{r }
+head(mdata)
+```   
+
+The dataset is composed of the 3 variables : *len* , *supp* and *dose*  
+  
+  -----
+
+```{r}
+str(mdata)
+```  
+
+The dataset contains 60 observations. The variable *supp* which represents the delivery methods, 
+have 2 levels inside : "OJ" = "Orange Juice" and "CV" = "Ascorbic Acid".
+
+
+## 3. Perform some basic exploratory data analyses  
+
+We have understood that the measures taken in the dataset represents tooth growth compared to the dose of vitamin C and
+the delivery methods. To understand the split by subject/observation I compute a table between *dose* and *supp* :  
+
+```{r}
+table(mdata$dose, mdata$supp)
+```  
+
+In this way, we can observed that the dataset splits 30 pigs by delivery methods and as we have 3 dose levels for each observation, there are 10 subjects by dose levels.  
+
+*For example we have 10 pigs which had 0.5 mg/day of vitamin C given by Orange Juice method*  
+
+
+Now we're going to go more deeper into the analyzes. It will be interesting to see if the dose levels of vitamin C 
+have an impact on the tooth growth. For that I realize with ggplot function a boxplot to vizualise the study (code in Appendix):  
+
+  
+```{r,echo=FALSE}
+
+ggplot(mdata, aes(factor(dose), len)) + 
+        geom_boxplot(aes(fill = factor(dose))) +
+        scale_fill_brewer(palette="Pastel1") + 
+        xlab("Dose levels of Vitamin (mg/day)") + 
+        ylab("Length of Tooth") + 
+        ggtitle("Effect of dose levels of Vitamic C on the Tooth Growth") + 
+        guides(fill=guide_legend(title="Dose Levels"))+
+        theme(plot.title = element_text(hjust = 0.5))
+
+```  
+
+\pagebreak
+Write the mean values by dose levels :  
+
+
+```{r,echo=FALSE}
+Global_Dose <- mdata %>% group_by(dose) %>% summarise(len = mean(len))
+Global_Dose
+```  
+Quickly, thank to the boxplot and the table above, we can conclude that indeed as more the pigs have a daily dose of vitamin C, as more their tooth growth is important.  
+
+Now we want to see if the delivery methods of vitamin C as well have an impact on the tooth growth of the pigs. I take the same proceed to realize it :  
+  
+```{r,echo=FALSE}
+
+ggplot(mdata, aes(factor(dose), len)) + 
+        geom_boxplot(aes(fill = factor(supp))) + 
+        facet_grid( ~ supp) +  
+        scale_fill_brewer(palette="Pastel1") + 
+        xlab("Dose levels of Vitamin C (mg/day)") + 
+        ylab("Length of Tooth")  + 
+        ggtitle("Comparaison effect of dose levels of Vitamin C on the Tooth Growth by Delivery Methods") +
+        guides(fill=guide_legend(title="Delivery Methods")) + 
+        theme(plot.title = element_text(size = 09 , hjust = 0.5))
+
+```  
+
+```{r,echo=FALSE}
+splitbySupp <- mdata %>% group_by(supp,dose) %>% summarise(len = mean(len))
+Global_Supp_Mean <- splitbySupp %>% group_by(supp) %>% summarise(len = mean(len))
+Global_OJ <- splitbySupp %>% filter(supp=="OJ")
+Global_VC <- splitbySupp %>% filter(supp=="VC")
+
+
+
+```  
+   
+**- Means in terms of delivery methods**  
+
+```{r,echo=FALSE}
+Global_Supp_Mean
+```  
+
+We can conclude that effectively the delivery methods influence the lenght of tooth at each degree of dosage. With the table
+above we understand that feed pigs of vitamin C with Orange Juice will produce better tooth growth than with Ascorbic Acid.
+
+\pagebreak  
+
+**- Means of Orange Juice by dose**  
+
+```{r,echo=FALSE}
+Global_OJ
+
+```  
+
+**- Means of Ascorbic Acid by dose**  
+
+```{r,echo=FALSE}
+Global_VC
+```  
+
+However, note that at 2 mg/day, there is no difference in the tooth growth between OJ or VC absorption (26.06 VS 26.14).  
+
+## 4. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose
+
+
