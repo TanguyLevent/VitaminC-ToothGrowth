@@ -50,6 +50,12 @@ Global_Supp_Mean <- splitbySupp %>% group_by(supp) %>% summarise(len = mean(len)
 Global_Supp_Mean
 
 d0.5<- mdata %>% filter(dose==.5)
-hist(d0.5$len, breaks = 5)
+hist(d0.5$len, breaks = 20)
 
-OJ <- splitbySupp %>% filter(supp=="OJ")
+OJ <- mdata %>% filter(supp=="OJ")
+VC <- mdata %>% filter(supp=="VC")
+
+
+t.test(OJ$len,VC$len,alternative = "greater",paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+fit <- cor (VC$len ,OJ$len)
+fit

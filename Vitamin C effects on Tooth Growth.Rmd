@@ -9,10 +9,6 @@ output:
 header-includes: \usepackage{color}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 ## Synopsis
 
 I download the ToothGrowth data in the R datasets package so that analyze the effect of the vitamin C on the Tooth growth in Guinea pigs.
@@ -149,6 +145,90 @@ Global_VC
 
 However, note that at 2 mg/day, there is no difference in the tooth growth between OJ or VC absorption (26.06 VS 26.14).  
 
-## 4. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose
+## 4. Use confidence intervals and hypothesis tests to compare tooth growth by supp and dose  
+
+**- Hypothesis 1 : mean Orange juice = mean absorbic acid in the tooth growth**  
+
+```{r}
+t.test(len~supp, paired = FALSE, var.equal = FALSE, mdata)
+```  
+
+With a p-value equals to 6% slightly above than the threshold of 5% and confidence intervals which include 0 then the null hypothesis cannot be rejected.  
+
+As above we can not reject the NULL hypothesis, we go in further details by dose if now we can reject the NULL hypothesis.  
+
+\pagebreak  
+
+**- Hypothesis 1.1 : mean Orange juice = mean absorbic acid in the tooth growth with dose = 0.5 mg/day**  
+
+```{r}
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose == 0.5))
+```  
+
+With a p-value equals to 0.6% well below than the threshold of 5% and confidence intervals which not include 0 then the null hypothesis can be rejected. Thus orange juice mean is above of the absorbic mean with a daily dose of 0.5 mg/day (as we expected).  
+
+**- Hypothesis 1.2 : mean Orange juice = mean absorbic acid in the tooth growth with dose = 1 mg/day**  
+
+```{r}
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose == 1))
+```  
+
+With a p-value equals to 0.1% well below than the threshold of 5% and confidence intervals which not include 0 then the null hypothesis can be rejected. Thus orange juice mean is above of the absorbic mean with a daily dose of 1 mg/day (as we expected).  
+
+**- Hypothesis 1.3 : mean Orange juice = mean absorbic acid in the tooth growth with dose = 2 mg/day**  
+
+```{r}
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose == 2))
+```  
+
+With a p-value equals to 96% well above than the threshold of 5% and confidence intervals which include 0 then the null hypothesis cannot be rejected.  
+
+**- Hypothesis 1.4 : mean Orange juice = mean absorbic acid in the tooth growth without dose = 2 mg/day**  
 
 
+```{r}
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose != 2))
+```  
+
+With a p-value equals to 0,4% well below than the threshold of 5% and confidence intervals which not include 0 then the null hypothesis can be rejected.  
+  
+With this hypothesis we can understand why the null hypothesis 1 can not be rejected, the fault of the dose of 2 mg/day in the data set.  
+
+---------   
+
+Now we are going to verify like the previous analysis, if our plot analyzes are corrects. Here we want to compare the mean by dose without take in account the delivery methods.  
+
+First of all I want to define the correlation function between *dose* and *len*.  
+
+```{r}
+cor(mdata$dose,mdata$len)
+```  
+  
+The two variables have 80% of correlation which is well positive. Even if 60 observations in the sample is correct to conclude of the relationship between the variables, it's not enough and need to be verify with a test hypothesis.
+
+\pagebreak  
+
+**- Hypothesis 2.1 : mean 0.5 mg/day = mean 1 mg/day in the tooth growth**  
+
+```{r}
+dose1 <- subset(mdata, dose %in% c(0.5,1))
+t.test(len~dose, paired = FALSE, var.equal = FALSE, dose1)
+```  
+
+With a p-value equals to 1.268e-07 widely well below of 0.5 and a confidence interval without include 0, the NULL hypothesis that the mean of dose 0.5 and 1 mg/day are equals can be rejected. Mean of 1 mg/day is well above of mean of 0.5 mg/day.  
+
+**- Hypothesis 2.2 : mean 1 mg/day = mean 2 mg/day in the tooth growth**  
+
+As we are certificate over 0.5 vs 1 mg/day, we are going to do it over 1 vs 2 mg/day. It's not necessary to do 0.5 vs 2 mg/day as the hypothesis 2.1 have already give us an analysis until 1 mg/day.
+
+```{r}
+dose2 <- subset(mdata, dose %in% c(1,2))
+t.test(len~dose, paired = FALSE, var.equal = FALSE, dose2)
+```  
+
+As we expected, the p-value is very low, well well below of 5% and there is no 0 in the confidence interval, thus the NULL hypothesis is rejected.  
+
+## Conclusion  
+
+At the first step we have used the exploratory analysis thanks to plots to understand the data set and the variables attached. The first plot shows us an effect of the tooth growth between the dose levels of vitamin C (0.5, 1, 2 mg/day). More the level is important, more the tooth grow. The second plot shows us the impact of the delivery methods of the vitamin C on the tooth growth. We have conclude that Orange Juice gives better results than Ascorbic Acid method delivery. Even if we have seen a decrease impact over the dose level on the Orange Juice because at 2 mg/day, VC is going back at the same mean lenght of tooth than OJ. It could be interesting to add 2 more level doses above 2 mg/day to see if VC get the upper hand over OJ.
+But exploratory analysis need to be support with statistical analysis so I made it on the same area and its leads us to conclude that the dose of vitamin C and the delivery methods have clearly an impact over the tooth growth.

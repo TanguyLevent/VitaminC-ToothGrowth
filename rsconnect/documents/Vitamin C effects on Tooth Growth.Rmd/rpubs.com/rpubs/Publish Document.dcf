@@ -2,7 +2,7 @@ name: Publish Document
 title:
 account: rpubs
 server: rpubs.com
-appId: https://api.rpubs.com/api/v1/document/253717/555b8d7cc21b4a158ff0d1b5f6f33e5e
-bundleId: https://api.rpubs.com/api/v1/document/253717/555b8d7cc21b4a158ff0d1b5f6f33e5e
-url: http://rpubs.com/TanguyLevent/253717
-when: 1488121127.19534
+appId: https://api.rpubs.com/api/v1/document/256555/6eacf13575a74fd78d410aee1961f552
+bundleId: https://api.rpubs.com/api/v1/document/256555/6eacf13575a74fd78d410aee1961f552
+url: http://rpubs.com/publish/claim/256555/c8bf4505175149e3bb11951bf8582ab4
+when: 1488889740.16809
