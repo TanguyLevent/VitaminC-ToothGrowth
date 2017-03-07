@@ -3,6 +3,7 @@ title: "The Effect of Vitamin C on Tooth Growth in Guinea Pigs"
 author: "Tanguy Levent"
 date: "26 février 2017"
 output:
+  html_document: default
   pdf_document: default
   word_document: default
 header-includes: \usepackage{color}
