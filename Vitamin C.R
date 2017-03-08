@@ -38,24 +38,28 @@ ggplot(mdata, aes(factor(dose), len)) +
         guides(fill=guide_legend(title="Delivery Methods")) + 
         theme(plot.title = element_text(size = 11, face = "bold",hjust = 0.5))
 
-# Analysis on Orange Jus
-Global_OJ <- splitbySupp %>% filter(supp=="OJ")
-Global_OJ
-#Analysis on Absorbic Acid
-Global_VC <- splitbySupp %>% filter(supp=="VC")
-Global_VC
-# Analyse Global delivery Method
-
+# Analysis on delivery methods
+splitbySupp <- mdata %>% group_by(supp,dose) %>% summarise(len = mean(len))
 Global_Supp_Mean <- splitbySupp %>% group_by(supp) %>% summarise(len = mean(len))
+Global_OJ <- splitbySupp %>% filter(supp=="OJ")
+Global_VC <- splitbySupp %>% filter(supp=="VC")
+
 Global_Supp_Mean
+Global_OJ
+Global_VC
 
-d0.5<- mdata %>% filter(dose==.5)
-hist(d0.5$len, breaks = 20)
+# Hypothesis tests :
 
-OJ <- mdata %>% filter(supp=="OJ")
-VC <- mdata %>% filter(supp=="VC")
+t.test(len~supp, paired = FALSE, var.equal = FALSE, mdata)
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose == 0.5))
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose == 1))
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose == 2))
+t.test(len~supp, paired = FALSE, var.equal = FALSE, subset(mdata, dose != 2))
 
+cor(mdata$dose,mdata$len)
 
-t.test(OJ$len,VC$len,alternative = "greater",paired = FALSE, var.equal = FALSE, conf.level = 0.95)
-fit <- cor (VC$len ,OJ$len)
-fit
+dose1 <- subset(mdata, dose %in% c(0.5,1))
+t.test(len~dose, paired = FALSE, var.equal = FALSE, dose1)
+
+dose2 <- subset(mdata, dose %in% c(1,2))
+t.test(len~dose, paired = FALSE, var.equal = FALSE, dose2)

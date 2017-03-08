@@ -4,5 +4,5 @@ account: rpubs
 server: rpubs.com
 appId: https://api.rpubs.com/api/v1/document/256555/6eacf13575a74fd78d410aee1961f552
 bundleId: https://api.rpubs.com/api/v1/document/256555/6eacf13575a74fd78d410aee1961f552
-url: http://rpubs.com/publish/claim/256555/c8bf4505175149e3bb11951bf8582ab4
-when: 1488889740.16809
+url: http://rpubs.com/TanguyLevent/256555
+when: 1488962391.8049

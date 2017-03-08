@@ -9,6 +9,8 @@ output:
 header-includes: \usepackage{color}
 ---
 
+Github account for the scripts : https://github.com/TanguyLevent
+
 ## Synopsis
 
 I download the ToothGrowth data in the R datasets package so that analyze the effect of the vitamin C on the Tooth growth in Guinea pigs.
@@ -67,7 +69,7 @@ In this way, we can observed that the dataset splits 30 pigs by delivery methods
 
 
 Now we're going to go more deeper into the analyzes. It will be interesting to see if the dose levels of vitamin C 
-have an impact on the tooth growth. For that I realize with ggplot function a boxplot to vizualise the study (code in Appendix):  
+have an impact on the tooth growth. For that I realize with ggplot function a boxplot to vizualise the study (code in the R script):  
 
   
 ```{r,echo=FALSE}
